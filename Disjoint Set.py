@@ -1,5 +1,5 @@
 # UnionFind class
-class UnionFind:
+class QuickFind:
     def __init__(self, size):
         self.root = [i for i in range(size)]
 
@@ -18,11 +18,57 @@ class UnionFind:
         return self.findRoot(x) == self.findRoot(y)
 
 
+class QuickUnion:
+
+    def __init__(self, size):
+        self.root = [i for i in range(size)]
+
+    def findRoot(self, x):
+        while x != self.root[x]:
+            x = self.root[x]
+        return x
+
+    def union(self, x, y):
+        rootX = self.findRoot(x)
+        rootY = self.findRoot(y)
+
+        if rootX != rootY:
+            self.root[rootY] = rootX
+
+    def connected(self, x, y):
+        return self.findRoot(x) == self.findRoot(y)
+
+
+class UnionByRank:
+    def __init__(self, size):
+        self.root = [i for i in range(size)]
+        self.rank = [1] * size
+
+    def findRoot(self, x):
+        while x != self.root[x]:
+            x = self.root[x]
+        return x
+
+    def union(self, x, y):
+        rootX = self.findRoot(x)
+        rootY = self.findRoot(y)
+        if rootX != rootY:
+            if self.rank[rootX] > self.rank[rootY]:
+                self.root[rootY] = rootX
+            elif self.rank[rootX] < self.rank[rootY]:
+                self.root[rootX] = rootY
+            else:
+                self.root[rootY] = rootX
+                self.rank[rootX] += 1
+
+    def connected(self, x, y):
+        return self.findRoot(x) == self.findRoot(y)
+
 
 if __name__ == "__main__":
     # Test Case
-    uf = UnionFind(10)
-    # 1-2-5-6-7 3-8-9-4
+    uf = UnionByRank(10)
+    # 1-2-5-6-7 3-8-9 4
     uf.union(1, 2)
     uf.union(2, 5)
     uf.union(5, 6)
