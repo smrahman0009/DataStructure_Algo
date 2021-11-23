@@ -45,9 +45,10 @@ class UnionByRank:
         self.rank = [1] * size
 
     def findRoot(self, x):
-        while x != self.root[x]:
-            x = self.root[x]
-        return x
+        if x == self.root[x]:
+            return x
+        self.root[x] = self.findRoot(self.root[x])
+        return self.root[x]
 
     def union(self, x, y):
         rootX = self.findRoot(x)
@@ -60,6 +61,28 @@ class UnionByRank:
             else:
                 self.root[rootY] = rootX
                 self.rank[rootX] += 1
+
+    def connected(self, x, y):
+        return self.findRoot(x) == self.findRoot(y)
+
+
+# Path compression optimizations UNION FIND.
+
+class PcoUnionFind:
+    def __init__(self, size):
+        self.root = [i for i in range(size)]
+
+    def findRoot(self, x):
+        if x == self.root[x]:
+            return x
+        self.root[x] = self.findRoot(self.root[x])
+        return self.root[x]
+
+    def union(self, x, y):
+        rootX = self.findRoot(x)
+        rootY = self.findRoot(y)
+        if rootX != rootY:
+            self.root[rootY] = self.root[rootX]
 
     def connected(self, x, y):
         return self.findRoot(x) == self.findRoot(y)
